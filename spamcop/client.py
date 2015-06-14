@@ -97,3 +97,47 @@ class SpamCopClient:
         :return:
         """
         logging.debug("reporting spam from file %s" % path_to_spam_mail_file)
+        reporting_session = requests.Session()
+        reporting_session.cookies = self.cookie_jar
+
+        payload = dict()
+        payload['action'] = "submit"
+        payload['oldverbose'] = "0"
+        payload['spam'] = open(path_to_spam_mail_file).read()
+        # this looks like a way of getting more diagnostic info from
+        # spamcop, so why not?
+        payload['verbose'] = "1"
+
+        logging.debug("the reporting payload spam is: %s" % payload['spam'])
+
+        report_response = reporting_session.post(self.reporting_url, data=payload, allow_redirects=False)
+        logging.debug("report response code is: %s" % report_response.status_code)
+        logging.debug("report response text is: %s" % report_response.text)
+        report_redirect_response = reporting_session.post(report_response.headers["location"])
+        logging.debug("redirect request to %s resulted in %s" %
+                      (report_response.headers["location"], report_redirect_response.status_code))
+        logging.debug("and the text is: %s" %report_redirect_response.text )
+
+
+"""
+        <p><form method="post" action="/sc" name="submitspam"
+  onsubmit="return formval(50000);"
+  enctype="multipart/form-data"
+  accept="text/plain"
+  accept-charset="ISO-8859-1">
+<input type="hidden" name="action" value="submit">
+<input type="hidden" name="oldverbose" value="0">
+Forward your spam to: <a href="mailto:submit.lvQdBnQemD2ZcN0l@spam.spamcop.net">
+submit.lvQdBnQemD2ZcN0l@spam.spamcop.net</a> or:
+<br>
+Paste entire spam (headers, blank line, body) - or - single address (one line only):
+<br>
+<textarea class="widetext" name="spam" rows=7 cols=80
+ wrap="off"></textarea><br>
+
+<input type="submit" name="x1" value="Process Spam">
+<input type="reset" name="x2" value="Clear Form">
+<input type="checkbox" name="verbose" value=1>Show technical details</form>
+<p>
+
+"""
