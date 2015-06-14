@@ -1,8 +1,6 @@
 import configparser
 import logging
 import os
-# from pickle import Pickler, Unpickler
-import pickle
 import requests
 import json
 
