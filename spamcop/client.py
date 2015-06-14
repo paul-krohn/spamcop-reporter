@@ -15,6 +15,9 @@ class SpamCopClient:
         # does the config file exist?
         self.cf = configparser.ConfigParser()
         self.cf.read(os.path.expanduser(config_file))
+        self.base_url = "https://www.spamcop.net/"
+        self.login_url = "%smcgi" % self.base_url
+        self.reporting_url = "%ssc" % self.base_url
 
         # check the config for a cookie file over-ride
         self.cookie_file = "~/.spamcop_cookies"
@@ -49,8 +52,9 @@ class SpamCopClient:
         logging.debug(payload)
         s = requests.Session()
 
-        login_response = s.post("https://www.spamcop.net/mcgi", data=payload, allow_redirects=False)
-        logging.debug("login initiation request response code: %s" % login_response.status_code)
+        login_response = s.post(self.login_url, data=payload, allow_redirects=False)
+        logging.debug("login initiation request (to %s) response code: %s" %
+                      (self.login_url, login_response.status_code))
 
         confirm_response = s.post(login_response.headers['location'], allow_redirects=False)
         logging.debug("login confirmation request response code: %s" % confirm_response.status_code)
