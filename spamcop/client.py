@@ -84,3 +84,12 @@ class SpamCopClient:
         cookie_file_h.write(json.dumps(requests.utils.dict_from_cookiejar(cookies)))
         print(json.dumps(requests.utils.dict_from_cookiejar(cookies)))
         cookie_file_h.close()
+
+    def report(self, path_to_spam_mail_file):
+        """
+        Report a spam, and hopefully press the
+        confirm button as well
+        :param path_to_spam_mail_file:
+        :return:
+        """
+        logging.debug("reporting spam from file %s" % path_to_spam_mail_file)
