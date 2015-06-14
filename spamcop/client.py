@@ -25,7 +25,14 @@ class SpamCopClient:
                 self.cookie_file = self.cf.get("Paths", "cookie_file")
             except configparser.NoOptionError:
                 pass
-        self._login()
+        self.cookie_file = os.path.expanduser(self.cookie_file)
+        # attempt to load cookies
+        if self._load_cookies():
+            pass
+        # else log in
+        else:
+            self._login()
+        print(self.cookie_jar)
 
     def _login(self):
         """
@@ -53,8 +60,29 @@ class SpamCopClient:
         self._save_cookies(s.cookies)
         return s
 
-    def _save_cookies(self, mmmm_cookies):
+    def _load_cookies(self):
+        """
+        check for and load a cookie file, return false if the file does
+        not exist or is not json
+        :return:
+        """
+        logging.debug("loading cookies from: %s" % self.cookie_file)
+        if os.path.isfile(self.cookie_file):
+            try:
+                self.cookie_jar = requests.utils.cookiejar_from_dict(
+                    json.load(
+                        open(self.cookie_file)
+                    )
+                )
+                return True
+            except:
+                # if the file isn't JSON, we'll log in & over-write later
+                return False
+        else:
+            return False
+
+    def _save_cookies(self, cookies):
         cookie_file_h = open(os.path.expanduser(self.cookie_file), 'w')
-        cookie_file_h.write(json.dumps(requests.utils.dict_from_cookiejar(mmmm_cookies)))
-        print(json.dumps(requests.utils.dict_from_cookiejar(mmmm_cookies)))
+        cookie_file_h.write(json.dumps(requests.utils.dict_from_cookiejar(cookies)))
+        print(json.dumps(requests.utils.dict_from_cookiejar(cookies)))
         cookie_file_h.close()
