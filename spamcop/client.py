@@ -3,7 +3,9 @@ import logging
 import os
 import requests
 import json
+import time
 
+from spamcop.response import SpamCopMetaFinder
 
 class SpamCopClient:
 
@@ -113,10 +115,27 @@ class SpamCopClient:
         report_response = reporting_session.post(self.reporting_url, data=payload, allow_redirects=False)
         logging.debug("report response code is: %s" % report_response.status_code)
         logging.debug("report response text is: %s" % report_response.text)
-        report_redirect_response = reporting_session.post(report_response.headers["location"])
+        report_redirect_response = reporting_session.get(report_response.headers["location"])
         logging.debug("redirect request to %s resulted in %s" %
                       (report_response.headers["location"], report_redirect_response.status_code))
-        logging.debug("and the text is: %s" %report_redirect_response.text )
+        logging.debug("and the text is: %s" % report_redirect_response.text)
+        # now detect if a meta refresh tag is present, and if so, the time
+        meta_finder = SpamCopMetaFinder()
+        meta_finder.feed(report_redirect_response.text)
+        refresh = meta_finder.detect_meta_refresh()
+        if refresh:
+            time.sleep(float(refresh))
+            # now GET the ... same URL?
+            logging.debug("getting the same (?) url again: %s" % report_response.headers["location"])
+            after_interstitial_response = reporting_session.get(report_response.headers["location"])
+            logging.debug("post-interstitial status code/response: %s/%s" %
+                          (after_interstitial_response.status_code, after_interstitial_response.text))
+
+        else:
+            logging.debug("you are paid and/or on the confirm page already?")
+            pass
+
+# print ("the refresh is: %s" % refresh)
 
 
 """
