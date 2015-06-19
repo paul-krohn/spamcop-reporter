@@ -122,7 +122,7 @@ class SpamCopClient:
         # now detect if a meta refresh tag is present, and if so, the time
         refresh = SpamCopFinder.meta_refresh_seconds(report_redirect_response.text)
         if refresh:
-            time.sleep(float(refresh))
+            time.sleep(refresh)
             # now GET the ... same URL?
             logging.debug("getting the same (?) url again: %s" % report_response.headers["location"])
             after_interstitial_response = reporting_session.get(report_response.headers["location"])
