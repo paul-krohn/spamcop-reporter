@@ -5,7 +5,7 @@ import requests
 import json
 import time
 
-from spamcop.response import SpamCopMetaFinder
+from spamcop.response import SpamCopFinder
 
 class SpamCopClient:
 
@@ -120,9 +120,7 @@ class SpamCopClient:
                       (report_response.headers["location"], report_redirect_response.status_code))
         logging.debug("and the text is: %s" % report_redirect_response.text)
         # now detect if a meta refresh tag is present, and if so, the time
-        meta_finder = SpamCopMetaFinder()
-        meta_finder.feed(report_redirect_response.text)
-        refresh = meta_finder.detect_meta_refresh()
+        refresh = SpamCopFinder.meta_refresh_seconds(report_redirect_response.text)
         if refresh:
             time.sleep(float(refresh))
             # now GET the ... same URL?
