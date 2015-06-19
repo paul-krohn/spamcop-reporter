@@ -32,24 +32,6 @@ class SpamCopMetaFinder(HTMLParser):
         # print("Encountered some data  :", data)
 
 
-class SpamCopHtmlPFinder(HTMLParser):
-
-    def __init__(self, verbose=0):
-        self.paragraphs = list()
-        HTMLParser.__init__(self, verbose)
-
-    def handle_starttag(self, tag, attrs):
-        print("Encountered a start tag:", tag)
-        if tag == "p":
-            print("and it is a paragraph")
-            self.paragraphs.append(tag)
-
-    def handle_endtag(self, tag):
-        print("Encountered an end tag :", tag)
-
-    def handle_data(self, data):
-        print("Encountered some data  :", data)
-
 class SpamCopFormFinder(HTMLParser):
 
     def __init__(self, verbose=0):
@@ -103,3 +85,13 @@ class SpamCopFinder:
                     pass
         # some error cases would be good!
         return payload
+
+    @staticmethod
+    def meta_refresh_seconds(html):
+        soup = BeautifulSoup(html)
+        meta_tags = soup.find_all("meta")
+        for meta in meta_tags:
+            if meta.get('http-equiv'):
+                # time.sleep wants a float
+                return float(meta.get("content"))
+        return False
