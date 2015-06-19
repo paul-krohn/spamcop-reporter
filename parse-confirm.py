@@ -2,8 +2,8 @@
 import sys
 import json
 
-from spamcop.response import SpamCopConfirmFormFinder
+from spamcop.response import SpamCopFinder
 
-scrff = SpamCopConfirmFormFinder()
-payload = scrff.find(open(sys.argv[1]).read())
+finder = SpamCopFinder()
+payload = finder.confirm_form(open(sys.argv[1]).read())
 print(json.dumps(payload, indent=4, sort_keys=True))

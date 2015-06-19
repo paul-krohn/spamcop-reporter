@@ -80,13 +80,13 @@ class SpamCopFormFinder(HTMLParser):
         # print("Encountered some data  :", data)
 
 
-class SpamCopConfirmFormFinder:
+class SpamCopFinder:
 
     def __init__(self):
         pass
 
     @staticmethod
-    def find(html):
+    def confirm_form(html):
         # parse the passed-in html
         soup = BeautifulSoup(html)
         # find all the forms with enctype set to multipart/form-data
