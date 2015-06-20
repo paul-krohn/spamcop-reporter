@@ -141,31 +141,3 @@ class SpamCopClient:
             confirm_response = reporting_session.post(self.reporting_url, data=payload, allow_redirects=False)
             logging.info("confirmation url responded with %s" % confirm_response.status_code)
             logging.debug("confirmation response was: %s" % confirm_response.text)
-
-
-
-
-
-
-"""
-        <p><form method="post" action="/sc" name="submitspam"
-  onsubmit="return formval(50000);"
-  enctype="multipart/form-data"
-  accept="text/plain"
-  accept-charset="ISO-8859-1">
-<input type="hidden" name="action" value="submit">
-<input type="hidden" name="oldverbose" value="0">
-Forward your spam to: <a href="mailto:submit.lvQdBnQemD2ZcN0l@spam.spamcop.net">
-submit.lvQdBnQemD2ZcN0l@spam.spamcop.net</a> or:
-<br>
-Paste entire spam (headers, blank line, body) - or - single address (one line only):
-<br>
-<textarea class="widetext" name="spam" rows=7 cols=80
- wrap="off"></textarea><br>
-
-<input type="submit" name="x1" value="Process Spam">
-<input type="reset" name="x2" value="Clear Form">
-<input type="checkbox" name="verbose" value=1>Show technical details</form>
-<p>
-
-"""
