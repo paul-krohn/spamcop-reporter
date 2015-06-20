@@ -1,4 +1,3 @@
-from html.parser import HTMLParser
 from bs4 import BeautifulSoup
 
 
@@ -19,7 +18,6 @@ class SpamCopFinder:
                 # you can't detect if 'type' is set, so wrap it in a try/except block?
                 try:
                     if child['type'] not in ['submit']:
-                        # print("%s/%s/%s" % (child['name'], child['type'], child['value']))
                         payload[child['name']] = child['value']
                 except KeyError:
                     pass
