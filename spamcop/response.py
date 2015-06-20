@@ -17,6 +17,11 @@ class SpamCopFinder:
             if child.name == "input":
                 # you can't detect if 'type' is set, so wrap it in a try/except block?
                 try:
+                    if child['type'] == 'checkbox':
+                        # could not find what the spec says to send
+                        # when there is no 'value' on a checkbox. but
+                        # True works ...
+                        payload[child['name']] = True
                     if child['type'] not in ['submit']:
                         payload[child['name']] = child['value']
                 except KeyError:
