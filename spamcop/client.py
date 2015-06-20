@@ -7,6 +7,7 @@ import time
 
 from spamcop.response import SpamCopFinder
 
+
 class SpamCopClient:
 
     def __init__(self, config_file="~/.spamcop"):
@@ -79,7 +80,7 @@ class SpamCopClient:
                     )
                 )
                 return True
-            except:
+            except (TypeError, ValueError):
                 # if the file isn't JSON, we'll log in & over-write later
                 return False
         else:
