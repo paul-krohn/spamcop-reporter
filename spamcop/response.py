@@ -13,6 +13,9 @@ class SpamCopFinder:
         # find all the forms with enctype set to multipart/form-data
         right_form = soup.find_all(enctype="multipart/form-data")
         payload = dict()
+        if len(right_form) == 0:
+            # something went wrong, ie re-submitting spam.
+            return False
         for child in right_form[0].descendants:
             if child.name == "input":
                 # you can't detect if 'type' is set, so wrap it in a try/except block?
