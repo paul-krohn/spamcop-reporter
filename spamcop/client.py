@@ -91,6 +91,18 @@ class SpamCopClient:
         print(json.dumps(requests.utils.dict_from_cookiejar(cookies)))
         cookie_file_h.close()
 
+    @staticmethod
+    def _build_submit_payload(mail_file):
+        payload = dict()
+        payload['action'] = "submit"
+        payload['oldverbose'] = "0"
+        payload['spam'] = open(mail_file).read()
+        # this looks like a way of getting more diagnostic info from
+        # spamcop, so why not?
+        payload['verbose'] = "1"
+
+        return payload
+
     def report(self, path_to_spam_mail_file):
         """
         Report a spam, and hopefully press the
@@ -102,14 +114,7 @@ class SpamCopClient:
         reporting_session = requests.Session()
         reporting_session.cookies = self.cookie_jar
 
-        payload = dict()
-        payload['action'] = "submit"
-        payload['oldverbose'] = "0"
-        payload['spam'] = open(path_to_spam_mail_file).read()
-        # this looks like a way of getting more diagnostic info from
-        # spamcop, so why not?
-        payload['verbose'] = "1"
-
+        payload = self._build_submit_payload(path_to_spam_mail_file)
         logging.debug("the reporting payload spam is: %s" % payload['spam'])
 
         report_response = reporting_session.post(self.reporting_url, data=payload, allow_redirects=False)
