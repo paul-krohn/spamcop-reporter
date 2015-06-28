@@ -36,7 +36,6 @@ class SpamCopClient:
         # else log in
         else:
             self._login()
-        print(self.cookie_jar)
 
     def _login(self):
         """
@@ -114,12 +113,11 @@ class SpamCopClient:
         logging.debug("the reporting payload spam is: %s" % payload['spam'])
 
         report_response = reporting_session.post(self.reporting_url, data=payload, allow_redirects=False)
-        logging.debug("report response code is: %s" % report_response.status_code)
-        logging.debug("report response text is: %s" % report_response.text)
+        logging.debug("report response code/text is: %s/%s" % (report_response.status_code, report_response.text))
         report_redirect_response = reporting_session.get(report_response.headers["location"])
-        logging.debug("redirect request to %s resulted in %s" %
-                      (report_response.headers["location"], report_redirect_response.status_code))
-        logging.debug("and the text is: %s" % report_redirect_response.text)
+        logging.debug("redirect request to %s resulted in %s/%s" % (report_response.headers["location"],
+                                                                    report_redirect_response.status_code,
+                                                                    report_redirect_response.text))
         # now detect if a meta refresh tag is present, and if so, the time
         refresh = SpamCopFinder.meta_refresh_seconds(report_redirect_response.text)
         if refresh:
@@ -129,7 +127,6 @@ class SpamCopClient:
             after_interstitial_response = reporting_session.get(report_response.headers["location"])
             logging.debug("post-interstitial status code/response: %s/%s" %
                           (after_interstitial_response.status_code, after_interstitial_response.text))
-
         else:
             logging.debug("you are paid and/or on the confirm page already?")
             after_interstitial_response = report_redirect_response
