@@ -93,6 +93,7 @@ class SpamCopClient:
 
     @staticmethod
     def _build_submit_payload(mail_file):
+        logging.debug("preparing payload from file %s" % mail_file)
         payload = dict()
         payload['action'] = "submit"
         payload['oldverbose'] = "0"
@@ -110,7 +111,6 @@ class SpamCopClient:
         :param path_to_spam_mail_file:
         :return:
         """
-        logging.debug("reporting spam from file %s" % path_to_spam_mail_file)
         reporting_session = requests.Session()
         reporting_session.cookies = self.cookie_jar
 
