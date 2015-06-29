@@ -138,7 +138,7 @@ class SpamCopClient:
 
         # now get the confirm for from whichever page it was
         confirmation_payload = SpamCopFinder.confirm_form(after_interstitial_response.text)
-        if payload:
+        if confirmation_payload:
             logging.debug(json.dumps(confirmation_payload, indent=4, sort_keys=True))
             # now submit the confirmation form.
             confirm_response = reporting_session.post(self.reporting_url, data=confirmation_payload, allow_redirects=False)
