@@ -97,7 +97,7 @@ class SpamCopClient:
         payload = dict()
         payload['action'] = "submit"
         payload['oldverbose'] = "0"
-        payload['spam'] = open(mail_file).read()
+        payload['spam'] = open(mail_file, "rb").read()
         # this looks like a way of getting more diagnostic info from
         # spamcop, so why not?
         payload['verbose'] = "1"
